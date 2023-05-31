@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from .forms import BirthdayForm
+from .models import Birthday
 from .utils import calculate_birthday_countdown
 
 
@@ -15,4 +16,12 @@ def birthday(request):
         context.update(
             {'birthday_countdown': birthday_countdown}
         )
-    return render(request, 'birthday/birthday.html', context)
+    template = 'birthday/birthday.html'
+    return render(request, template, context)
+
+
+def birthday_list(request):
+    birthdays = Birthday.objects.all()
+    context = {'birthdays': birthdays}
+    template = 'birthday/birthday_list.html'
+    return render(request, template, context)
