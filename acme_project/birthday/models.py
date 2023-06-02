@@ -18,3 +18,11 @@ class Birthday(models.Model):
         verbose_name='Дата рождения',
         validators=(real_age,)
     )
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=('first_name', 'last_name', 'birthday'),
+                name='Unique person constraint',
+            ),
+        )
