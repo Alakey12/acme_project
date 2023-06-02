@@ -1,5 +1,7 @@
 from django.db import models
 
+from .validators import real_age
+
 
 class Birthday(models.Model):
     first_name = models.CharField(
@@ -13,5 +15,6 @@ class Birthday(models.Model):
         max_length=20
     )
     birthday = models.DateField(
-        verbose_name='Дата рождения'
+        verbose_name='Дата рождения',
+        validators=(real_age,)
     )
