@@ -76,6 +76,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = 'login'
+
 LOGIN_REDIRECT_URL = 'pages:homepage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
