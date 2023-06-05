@@ -4,18 +4,13 @@ from django.core.exceptions import PermissionDenied
 from django.views.generic import (
     CreateView, DeleteView, DetailView, ListView, UpdateView
 )
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 
-from .forms import BirthdayForm
+from .forms import BirthdayForm, CongratulationForm
 from .models import Birthday
 from .utils import calculate_birthday_countdown
-
-
-@login_required
-def simple_view(request):
-    return HttpResponse('Страница для залогиненных пользователей!')
 
 
 class BirthdayListView(ListView):
@@ -63,4 +58,25 @@ class BirthdayDetailView(DetailView):
         context['birthday_countdown'] = calculate_birthday_countdown(
             self.object.birthday
         )
+        context['form'] = CongratulationForm()
+        context['congratulations'] = (
+            self.object.congratulations.select_related('author')
+        )
         return context
+
+
+@login_required
+def simple_view(request):
+    return HttpResponse('Страница для залогиненных пользователей!')
+
+
+@login_required
+def add_comment(request, pk):
+    birthday = get_object_or_404(Birthday, pk=pk)
+    form = CongratulationForm(request.POST)
+    if form.is_valid():
+        congratulation = form.save(commit=False)
+        congratulation.author = request.user
+        congratulation.birthday = birthday
+        congratulation.save()
+    return redirect('birthday:detail', pk=pk)
